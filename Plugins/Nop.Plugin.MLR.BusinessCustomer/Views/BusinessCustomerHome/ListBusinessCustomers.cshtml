@@ -1,0 +1,21 @@
+﻿@using Nop.Web.Framework;
+@using System.Linq;
+@using Nop.Web.Framework.UI;
+@model Nop.Plugin.MLR.BusinessCustomer.Domain.BusinessCustomer
+
+@{ Layout = "_AdminLayout.cshtml"; }
+
+<script>
+    $(document).ready(function() {
+        $("#business-customer-edit").kendoTabStrip({
+            animation: {
+                open: { effects: "fadeIn" }
+            },
+            select: tabstrip_on_tab_select
+        });
+    });
+</script>
+
+<div id="business-customer-edit">
+    <h1>Hello World!</h1>
+</div>

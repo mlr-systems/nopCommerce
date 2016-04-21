@@ -24,4 +24,4 @@ Tax.FixedRate
 Tax.CountryStateZip
 Widgets.GoogleAnalytics
 Widgets.NivoSlider
-Misc.MLR_Admin
+MLR.BusinessCustomer

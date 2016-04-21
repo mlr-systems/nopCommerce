@@ -1,8 +1,0 @@
-﻿Group: Widgets
-FriendlyName: MLR Admin
-SystemName: Widgets.MLR_Admin
-Version: 1.00
-SupportedVersions: 3.70
-Author: Smart Access IT
-DisplayOrder: 1
-FileName: Nop.Plugin.Widgets.MLR.Admin.dll
