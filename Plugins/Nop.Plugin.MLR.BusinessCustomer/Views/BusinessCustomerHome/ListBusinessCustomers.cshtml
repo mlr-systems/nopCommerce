@@ -1,21 +1,103 @@
-﻿@using Nop.Web.Framework;
-@using System.Linq;
-@using Nop.Web.Framework.UI;
-@model Nop.Plugin.MLR.BusinessCustomer.Domain.BusinessCustomer
+﻿@using System.Globalization;
+@using Nop.Core.Infrastructure
+@{
+    var defaultGridPageSize = EngineContext.Current.Resolve<Nop.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
+    var gridPageSizes = EngineContext.Current.Resolve<Nop.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;
+
+    //page title
+    ViewBag.Title = "Business Customers";
+}
 
 @{ Layout = "_AdminLayout.cshtml"; }
 
-<script>
-    $(document).ready(function() {
-        $("#business-customer-edit").kendoTabStrip({
-            animation: {
-                open: { effects: "fadeIn" }
-            },
-            select: tabstrip_on_tab_select
-        });
-    });
-</script>
 
-<div id="business-customer-edit">
-    <h1>Hello World!</h1>
+<div class="section-header">
+    <div class="title">
+        <img src="@Url.Content("~/Administration/Content/images/ico-customers.png")" alt=""/>
+        Business Customers
+    </div>
+    <div class="options">
+        <a href="@Url.Action("Create")" class="k-button">Add New</a>
+        <input type="submit" name="exportxml-all" class="k-button" value="@T("Admin.Common.ExportToXml.All")"/>
+        <input type="button" id="exportxml-selected" class="k-button" value="@T("Admin.Common.ExportToXml.Selected")"/>
+        <input type="submit" name="exportexcel-all" class="k-button" value="@T("Admin.Common.ExportToExcel.All")"/>
+        <input type="button" id="exportexcel-selected" class="k-button" value="@T("Admin.Common.ExportToExcel.Selected")"/>
+    </div>
 </div>
+
+<table class="adminContent">
+    <tr>
+        <td>
+            <div id="customers-grid"></div>
+
+
+            <script>
+                $(document).ready(function () {
+                    $("#customers-grid").kendoGrid({
+                        dataSource: {
+                            type: "json",
+                            transport: {
+                                read: {
+                                    url: "@Html.Raw(Url.Action("BusinessCustomerList", "BusinessCustomerHome"))",
+                                    type: "POST",
+                                    dataType: "json"
+                                }
+                            },
+                            schema: {
+                                data: "Data",
+                                total: "Total",
+                                errors: "Errors"
+                            },
+                            error: function(e) {
+                                display_kendoui_grid_error(e);
+                                // Cancel the changes
+                                this.cancelChanges();
+                            },
+                            pageSize: @(defaultGridPageSize),
+                            serverPaging: true,
+                            serverFiltering: true,
+                            serverSorting: true
+                        },
+                        pageable: {
+                            refresh: true,
+                            pageSizes: [@(gridPageSizes)]
+                        },
+                        scrollable: false,
+                        columns: [ {
+                            field: "BusinessCustomerId",
+                            title: "ID",
+                            width: 50
+                        }, {
+                            field: "BusinessName",
+                            title: "Business Name",
+                            width: 200
+                        },
+                        {
+                            field: "BusinessCustomerContact",
+                            title: "Business Contact",
+                            width: 100
+                        }, 
+                        {
+                            field: "ResellerNumber",
+                            title: "Reseller Number",
+                            width: 200
+                        }, 
+                        {
+                            field: "W9",
+                            title: "W9",
+                            width: 200
+                        }, 
+                        {
+                            field: "Id",
+                            title: "Edit",
+                            width: 50,
+                            template: '<a href="Edit/#=Id#">Edit</a>'
+                        }]
+                    });
+                });
+            </script>
+
+        </td>
+    </tr>
+</table>
+

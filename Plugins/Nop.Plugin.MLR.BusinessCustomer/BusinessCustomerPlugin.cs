@@ -35,7 +35,7 @@ namespace Nop.Plugin.MLR.BusinessCustomer
                 SystemName = "MLR.BusinessCustomer",
                 Title = "Manage Business Customers",
                 ControllerName = "BusinessCustomerHome",
-                ActionName = "ListBusinessCustomers",
+                ActionName = "List",
                 Visible = true,
                 RouteValues = new RouteValueDictionary() { { "area", null } },
             };
