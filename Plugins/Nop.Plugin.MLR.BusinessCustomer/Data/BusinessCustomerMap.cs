@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity.ModelConfiguration;
+using Nop.Core.Domain.Customers;
 
 namespace Nop.Plugin.MLR.BusinessCustomer.Data
 {
@@ -13,6 +14,8 @@ namespace Nop.Plugin.MLR.BusinessCustomer.Data
             Property(x => x.BusinessCustomerContact);
             Property(x => x.ResellerNumber);
             Property(x => x.W9);
+
+            //HasMany(x => x.BusinessCustomerXCustomers);
         }
     }
 }

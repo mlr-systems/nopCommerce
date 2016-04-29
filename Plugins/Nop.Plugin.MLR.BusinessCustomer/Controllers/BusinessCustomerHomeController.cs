@@ -51,6 +51,38 @@ namespace Nop.Plugin.MLR.BusinessCustomer.Controllers
         {
             return View("~/Plugins/MLR.BusinessCustomer/Views/BusinessCustomerHome/Configure.cshtml");
         }
+        public ActionResult Create()
+        {
+            
+            var model = new Domain.BusinessCustomer();
+           
+            return View("~/Plugins/MLR.BusinessCustomer/Views/BusinessCustomerHome/Create.cshtml", model);
+        }
+
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        [FormValueRequired("save", "save-continue")]
+        [ValidateInput(false)]
+        public ActionResult Create(Domain.BusinessCustomer model, bool continueEditing, FormCollection form)
+        {
+            Domain.BusinessCustomer businessCustomer = new Domain.BusinessCustomer();
+
+            if (ModelState.IsValid)
+            {
+                businessCustomer.BusinessName = model.BusinessName;
+                businessCustomer.BusinessCustomerContact = model.BusinessCustomerContact;
+                businessCustomer.ResellerNumber = model.ResellerNumber;
+                businessCustomer.W9 = model.W9;
+                businessCustomer.Id = model.Id;
+
+                _businessCustomerRepo.Insert(businessCustomer);
+            }
+
+            if (continueEditing)
+            {
+                return RedirectToAction("Edit", "BusinessCustomerHome", new { id = businessCustomer.Id });
+            }
+            return RedirectToAction("List", "BusinessCustomerHome");
+        }
 
         public ActionResult Edit(int id)
         {
@@ -62,6 +94,37 @@ namespace Nop.Plugin.MLR.BusinessCustomer.Controllers
             }
 
             return View("~/Plugins/MLR.BusinessCustomer/Views/BusinessCustomerHome/Edit.cshtml", businessCustomer);
+        }
+
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        [FormValueRequired("save", "save-continue")]
+        public ActionResult Edit(Domain.BusinessCustomer model, bool continueEditing, FormCollection form)
+        {
+            var businessCustomer = _businessCustomerRepo.Table.Single(x => x.Id == model.Id);
+
+            //if (businessCustomer == null || businessCustomer.Deleted)
+            if (businessCustomer == null)
+            {
+                //No customer found with the specified id
+                return RedirectToAction("List");
+            }
+                
+            if (ModelState.IsValid)
+            {
+                businessCustomer.BusinessName = model.BusinessName;
+                businessCustomer.BusinessCustomerContact = model.BusinessCustomerContact;
+                businessCustomer.ResellerNumber = model.ResellerNumber;
+                businessCustomer.W9 = model.W9;
+                businessCustomer.Id = model.Id;
+
+                _businessCustomerRepo.Update(businessCustomer);
+            }
+
+            if (continueEditing)
+            {
+                return RedirectToAction("Edit", "BusinessCustomerHome", new { id = businessCustomer.Id });
+            }
+            return RedirectToAction("List", "BusinessCustomerHome");
         }
     }
 }

@@ -143,6 +143,9 @@
     <Content Include="Views\BusinessCustomerHome\Edit.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Views\BusinessCustomerHome\Create.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Views\BusinessCustomerHome\ListBusinessCustomers.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

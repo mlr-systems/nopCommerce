@@ -17,18 +17,9 @@
         <div class="options">
             <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
             <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
-            <input type="button" id="sendemail" class="k-button" value="@T("Admin.Customers.Customers.SendEmail")" />
-            <input type="button" id="sendprivatemessage" class="k-button" value="@T("Admin.Customers.Customers.SendPM")" />
-            @*@if (Model.AllowSendingOfWelcomeMessage)
-            {
-                <input type="submit" name="send-welcome-message" class="k-button" value="@T("Admin.Customers.Customers.SendWelcomeMessage")" onclick="return confirm('@T("Admin.Common.AreYouSure")');" />
-            }
-            @if (Model.AllowReSendingOfActivationMessage)
-            {
-                <input type="submit" name="resend-activation-message" class="k-button" value="@T("Admin.Customers.Customers.ReSendActivationMessage")" onclick="return confirm('@T("Admin.Common.AreYouSure")');" />
-            }*@
-            <span id="customer-delete" class="k-button">@T("Admin.Common.Delete")</span>
+            @*<input type="button" id="sendemail" class="k-button" value="@T("Admin.Customers.Customers.SendEmail")" />
+            <input type="button" id="sendprivatemessage" class="k-button" value="@T("Admin.Customers.Customers.SendPM")" />*@            
         </div>
     </div>
-    @*@Html.Partial("_CreateOrUpdate", Model)*@
+    @Html.Partial("~/Plugins/MLR.BusinessCustomer/Views/BusinessCustomerHome/_CreateOrUpdate.cshtml", Model)
 }
