@@ -7,6 +7,7 @@ using Nop.Core.Infrastructure.DependencyManagement;
 using Nop.Data;
 using Nop.Plugin.MLR.BusinessCustomer.Controllers;
 using Nop.Plugin.MLR.BusinessCustomer.Data;
+using Nop.Plugin.MLR.BusinessCustomer.Services;
 using Nop.Web.Framework.Mvc;
 
 namespace Nop.Plugin.MLR.BusinessCustomer
@@ -19,10 +20,17 @@ namespace Nop.Plugin.MLR.BusinessCustomer
         {
             this.RegisterPluginDataContext<BusinessCustomerContext>(builder, ContextName);
 
-            builder.RegisterType<EfRepository<Domain.BusinessCustomer>>()
-                .As<IRepository<Domain.BusinessCustomer>>()
+            builder.RegisterType<EfRepository<Domain.MLR_BusinessCustomer>>()
+                .As<IRepository<Domain.MLR_BusinessCustomer>>()
                 .WithParameter(ResolvedParameter.ForNamed<IDbContext>(ContextName))
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType<EfRepository<Domain.MLR_Employee>>()
+                .As<IRepository<Domain.MLR_Employee>>()
+                .WithParameter(ResolvedParameter.ForNamed<IDbContext>(ContextName))
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<BusinessCustomerService>().As<IBusinessCustomerService>().InstancePerLifetimeScope();
 
             builder.RegisterType<BusinessCustomerHomeController>();
         }

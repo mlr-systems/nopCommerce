@@ -1,5 +1,5 @@
 ﻿@using Nop.Web.Framework
-@model Nop.Plugin.MLR.BusinessCustomer.Domain.BusinessCustomer
+@model Nop.Plugin.MLR.BusinessCustomer.Domain.MLR_BusinessCustomer
 @Html.ValidationSummary(false)
 @Html.HiddenFor(model => model.BusinessCustomerId)
 
@@ -23,20 +23,24 @@
         <li>
             Roles
         </li>
-        @if (Model.Id > 0)
+        @if (Model.BusinessCustomerId > 0)
         {
             <li>
                 Orders
             </li>
             <li>
-                Addresses
+               Addresses
             </li>
             <li>
                 Quote Sheet
             </li>
             <li>
+                Employees
+            </li>
+            <li>
                 Activity Log
             </li>
+            
         }
     </ul>
     <div>
@@ -45,16 +49,19 @@
     <div>
         <h1>Roles!</h1>
     </div>
-    @if (Model.Id > 0)
+    @if (Model.BusinessCustomerId > 0)
     {
         <div>
             <h1>Orders!</h1>
         </div>
         <div>
-            <h1>Addresses!</h1>
+            @BusinessCustomerAddresses()
         </div>
         <div>
             <h1>Quote Sheet!</h1>
+        </div>
+        <div>
+            <h1>Employees!</h1>
         </div>
         <div>
             <h1>Activity Log!</h1>
@@ -65,6 +72,14 @@
 @helper BusinessCustomerInfo()
 {
     <table class="adminContent business-customer-info-tab">
+        <tr>
+            <td class="adminTitle">
+                @Html.NopLabelFor(model => model.MlrBusinessCode):
+            </td>
+            <td class="adminData">
+                @Html.DisplayFor(model => model.MlrBusinessCode)
+            </td>
+        </tr>
         <tr>
             <td class="adminTitle">
                 @Html.NopLabelFor(model => model.BusinessName):
@@ -96,19 +111,97 @@
             <td class="adminTitle">
                 @Html.NopLabelFor(model => model.W9):
             </td>
-            <td class="adminData">
+            <td class="adminData">                
                 @Html.EditorFor(model => model.W9)
                 @Html.ValidationMessageFor(model => model.W9)
             </td>
         </tr>
-        <tr>
-            <td class="adminTitle">
-                @Html.NopLabelFor(model => model.Id):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.Id)
-                @Html.ValidationMessageFor(model => model.Id)
-            </td>
-        </tr>
     </table>
+}
+
+@helper BusinessCustomerAddresses() {
+    <div id="business-customer-addresses-grid"></div>
+
+        <script>
+        $(document).ready(function () {
+            $("#business-customer-addresses-grid").kendoGrid({
+                dataSource: {
+                    type: "json",
+                    transport: {
+                        read: {
+                            url: "@Html.Raw(Url.Action("AddressesSelect", "BusinessCustomerHome", new { businessCustomerId = Model.BusinessCustomerId }))",
+                            type: "POST",
+                            dataType: "json",
+                            data: addAntiForgeryToken
+                        },
+                        destroy: {
+                            url: "@Html.Raw(Url.Action("AddressDelete", "BusinessCustomerHome", new { businessCustomerId = Model.BusinessCustomerId }))",
+                            type: "POST",
+                            dataType: "json",
+                            data: addAntiForgeryToken
+                        }
+                    },
+                    schema: {
+                        data: "Data",
+                        total: "Total",
+                        errors: "Errors",
+                        model: {
+                            id: "Id"
+                        }
+                    },
+                    error: function(e) {
+                        display_kendoui_grid_error(e);
+                        // Cancel the changes
+                        this.cancelChanges();
+                    },
+                    serverPaging: true,
+                    serverFiltering: true,
+                    serverSorting: true
+                },
+                pageable: {
+                    refresh: true,
+                    numeric: false,
+                    previousNext: false,
+                    info: false
+                },
+                editable: {
+                    confirmation: false,
+                    mode: "inline"
+                },
+                scrollable: false,
+                columns: [{
+                    field: "FirstName",
+                    title: "@T("Admin.Address.Fields.FirstName")"
+                }, {
+                    field: "LastName",
+                    title: "@T("Admin.Address.Fields.LastName")"
+                }, {
+                    field: "Email",
+                    title: "@T("Admin.Address.Fields.Email")"
+                }, {
+                    field: "PhoneNumber",
+                    title: "@T("Admin.Address.Fields.PhoneNumber")"
+                }, {
+                    field: "FaxNumber",
+                    title: "@T("Admin.Address.Fields.FaxNumber")"
+                }, {
+                    field: "AddressHtml",
+                    title: "@T("Admin.Address")",
+                    encoded: false
+                }, {
+                    field: "Id",
+                    title: "@T("Admin.Common.Edit")",
+                    width: 100,
+                    template: '<a href="@Url.Content("~/Admin/Customer/AddressEdit?customerId=")@Model.Id&addressid=#=Id#">@T("Admin.Common.Edit")</a>'
+                }, {
+                    command: { name: "destroy", text: "@T("Admin.Common.Delete")" },
+                    title: "@T("Admin.Common.Delete")",
+                    width: 100
+                }]
+            });
+        });
+        </script>
+        <p>
+            <input type="button" class="k-button" onclick="location.href='@Url.Action("AddressCreate", new { customerId = Model.Id })'" value='@T("Admin.Customers.Customers.Addresses.AddButton")' />
+        </p>
 }

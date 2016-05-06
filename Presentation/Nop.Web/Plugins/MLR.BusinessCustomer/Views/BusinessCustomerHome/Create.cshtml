@@ -1,4 +1,4 @@
-﻿@model Nop.Plugin.MLR.BusinessCustomer.Domain.BusinessCustomer
+﻿@model Nop.Plugin.MLR.BusinessCustomer.Domain.MLR_BusinessCustomer
 @{
     //page title
     ViewBag.Title = "Create new Business Customer";
@@ -7,6 +7,7 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
+
     <div class="section-header">
         <div class="title">
             <img src="@Url.Content("~/Administration/Content/images/ico-customers.png")" alt="" />

@@ -1,18 +1,29 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Diagnostics;
 using Nop.Core;
 using Nop.Data;
+using Nop.Data.Mapping.Common;
+using Nop.Data.Mapping.Directory;
 
 namespace Nop.Plugin.MLR.BusinessCustomer.Data
 {
     public class BusinessCustomerContext : DbContext, IDbContext
     {
-        public BusinessCustomerContext(string connection) : base(connection) { }
+        public BusinessCustomerContext(string connection) : base(connection)
+        {
+            this.Database.Log = x => Debug.WriteLine(x);
+        }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Configurations.Add(new BusinessCustomerMap());
+            modelBuilder.Configurations.Add(new MLR_BusinessCustomerMap());
+            //modelBuilder.Configurations.Add(new MLR_EmployeeMap());
+            modelBuilder.Configurations.Add(new AddressMap());
+            modelBuilder.Configurations.Add(new CountryMap());
+            modelBuilder.Configurations.Add(new StateProvinceMap());
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -24,13 +35,14 @@ namespace Nop.Plugin.MLR.BusinessCustomer.Data
         public void Install()
         {
             Database.SetInitializer<BusinessCustomerContext>(null);
-            Database.ExecuteSqlCommand(CreateDatabaseInstallationScript());
-            SaveChanges();
+            //Database.ExecuteSqlCommand(CreateDatabaseInstallationScript());
+            //SaveChanges();
         }
 
         public void Uninstall()
         {
-            this.DropPluginTable("BusinessCustomer");
+            //this.DropPluginTable("MLR_BusinessCustomer");
+            //this.DropPluginTable("MLR_Agent");
         }
 
         public new IDbSet<TEntity> Set<TEntity>() where TEntity : BaseEntity

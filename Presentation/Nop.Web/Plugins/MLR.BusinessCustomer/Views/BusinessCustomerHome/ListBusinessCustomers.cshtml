@@ -64,34 +64,34 @@
                         },
                         scrollable: false,
                         columns: [ {
-                            field: "BusinessCustomerId",
-                            title: "ID",
+                            field: "MlrCustomerCode",
+                            title: "Customer Code",
                             width: 50
                         }, {
                             field: "BusinessName",
                             title: "Business Name",
                             width: 200
                         },
+                        //{
+                        //    field: "BusinessCustomerContact",
+                        //    title: "Business Contact",
+                        //    width: 100
+                        //}, 
+                        //{
+                        //    field: "ResellerNumber",
+                        //    title: "Reseller Number",
+                        //    width: 200
+                        //}, 
+                        //{
+                        //    field: "W9",
+                        //    title: "W9",
+                        //    width: 200
+                        //}, 
                         {
-                            field: "BusinessCustomerContact",
-                            title: "Business Contact",
-                            width: 100
-                        }, 
-                        {
-                            field: "ResellerNumber",
-                            title: "Reseller Number",
-                            width: 200
-                        }, 
-                        {
-                            field: "W9",
-                            title: "W9",
-                            width: 200
-                        }, 
-                        {
-                            field: "Id",
+                            field: "BusinessCustomerId",
                             title: "Edit",
                             width: 50,
-                            template: '<a href="Edit/#=Id#">Edit</a>'
+                            template: '<a href="Edit/#=BusinessCustomerId#">Edit</a>'
                         }]
                     });
                 });
