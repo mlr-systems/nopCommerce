@@ -37,10 +37,10 @@ namespace Nop.Plugin.MLR.BusinessCustomer.Controllers
         private readonly IAddressAttributeFormatter _addressAttributeFormatter;
         private readonly IBusinessCustomerService _businessCustomerService;
 
-        public BusinessCustomerHomeController(IRepository<Domain.MLR_BusinessCustomer> businessCustomerRepo, 
-                                              AddressSettings addressSettings, IAddressService addressService, 
-                                              ICountryService countryService, IStateProvinceService stateProvinceService, 
-                                              IAddressAttributeParser addressAttributeParser, IAddressAttributeService addressAttributeService, 
+        public BusinessCustomerHomeController(IRepository<Domain.MLR_BusinessCustomer> businessCustomerRepo,
+                                              AddressSettings addressSettings, IAddressService addressService,
+                                              ICountryService countryService, IStateProvinceService stateProvinceService,
+                                              IAddressAttributeParser addressAttributeParser, IAddressAttributeService addressAttributeService,
                                               IAddressAttributeFormatter addressAttributeFormatter, IBusinessCustomerService businessCustomerService)
         {
             _businessCustomerRepo = businessCustomerRepo;
@@ -140,7 +140,7 @@ namespace Nop.Plugin.MLR.BusinessCustomer.Controllers
         [FormValueRequired("save", "save-continue")]
         public ActionResult Edit(Domain.MLR_BusinessCustomer model, bool continueEditing, FormCollection form)
         {
-            var businessCustomer = _businessCustomerRepo.Table.Single(x => x.Id == model.Id);
+            var businessCustomer = _businessCustomerRepo.Table.Single(x => x.BusinessCustomerId == model.BusinessCustomerId);
 
             //if (businessCustomer == null || businessCustomer.Deleted)
             if (businessCustomer == null)
@@ -224,16 +224,26 @@ namespace Nop.Plugin.MLR.BusinessCustomer.Controllers
             //    return AccessDeniedView();
 
             var businessCustomer = _businessCustomerService.GetById(businessCustomerId);
+
             if (businessCustomer == null)
-                throw new ArgumentException("No customer found with the specified id", "customerId");
+            {
+                throw new ArgumentException("No Business Customer found with the specified id", "businessCustomerId");
+            }
 
             var address = businessCustomer.Addresses.FirstOrDefault(a => a.Id == id);
             if (address == null)
+            {
                 //No customer found with the specified id
-                return Content("No customer found with the specified id");
+                return Content("No Business Customer found with the specified id");
+            }
+
             businessCustomer.RemoveAddress(address);
             _businessCustomerService.UpdateBusinessCustomer(businessCustomer);
-            //now delete the address record
+            
+            // now delete the address record
+            // the AddressService has a different context so we need to force
+            // the attachment so we can delete it
+            address = _addressService.GetAddressById(address.Id);
             _addressService.DeleteAddress(address);
 
             return new NullJsonResult();
@@ -252,7 +262,7 @@ namespace Nop.Plugin.MLR.BusinessCustomer.Controllers
             var model = new BusinessCustomerAddressModel();
             PrepareAddressModel(model, null, businessCustomer, false);
 
-            return View("~/Plugins/MLR.BusinessCustomer/Views/BusinessCustomerHome/AddressCreate.cshtml",model);
+            return View("~/Plugins/MLR.BusinessCustomer/Views/BusinessCustomerHome/AddressCreate.cshtml", model);
         }
 
         [HttpPost]
@@ -289,7 +299,7 @@ namespace Nop.Plugin.MLR.BusinessCustomer.Controllers
                 _businessCustomerService.UpdateBusinessCustomer(businessCustomer);
 
                 SuccessNotification("Address Added");
-                return RedirectToAction("AddressEdit", new { addressId = address.Id, customerId = model.BusinessCustomerId });
+                return RedirectToAction("AddressEdit", new { addressId = address.Id, businessCustomerId = model.BusinessCustomerId });
             }
 
             //If we got this far, something failed, redisplay form
@@ -349,7 +359,7 @@ namespace Nop.Plugin.MLR.BusinessCustomer.Controllers
                 _addressService.UpdateAddress(address);
 
                 SuccessNotification("Address Updated");
-                return RedirectToAction("AddressEdit", new { addressId = model.Address.Id, customerId = model.BusinessCustomerId });
+                return RedirectToAction("AddressEdit", new { addressId = model.Address.Id, businessCustomerId = model.BusinessCustomerId });
             }
 
             //If we got this far, something failed, redisplay form
